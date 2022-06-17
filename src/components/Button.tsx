@@ -1,7 +1,7 @@
 import { Icon } from './Icon';
 
 import '../styles/button.scss';
-import { ButtonHTMLAttributes, useMemo } from 'react';
+import { ButtonHTMLAttributes, memo, useMemo } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
@@ -9,19 +9,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   selected: boolean;
 }
 
-export function Button({ iconName, title, selected, ...rest }: ButtonProps) {
-  const props = useMemo(() => {
-    return {
-      iconName,
-      title,
-      selected,
-    }
-  }, [selected])
+export function ButtonComponent({ iconName, title, selected, ...rest }: ButtonProps) {
 
   return (
-    <button type="button" {...(props.selected && { className: 'selected' })} {...rest}>
-      <Icon name={props.iconName} color={props.selected ? '#FAE800' : '#FBFBFB'} />
-      {props.title}
+    <button type="button" {...(selected && { className: 'selected' })} {...rest}>
+      <Icon name={iconName} color={selected ? '#FAE800' : '#FBFBFB'} />
+      {title}
     </button>
   );
 }
+
+export const Button = memo(ButtonComponent, (prevProps, nextProps) => {
+  return prevProps.selected === nextProps.selected;
+});
